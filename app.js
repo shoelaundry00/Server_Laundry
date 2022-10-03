@@ -48,6 +48,10 @@ app.post('/api/test', async (req, res, next) => {
   }
 })
 
+app.get("/", function(req, res){
+  res.send("API WORKING!!!")
+})
+
 app.listen(3000, () => console.log(`Running...`))
 
 // eslint-disable-next-line no-unused-vars
