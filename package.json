@@ -5,7 +5,9 @@
   "main": "app.js",
   "scripts": {
     "dev": "node devApp.js",
-    "seed": "node seed/seed.mjs"
+    "seed": "node seed/seed.mjs",
+    "start": "NODE_ENV=development ./node_modules/.bin/netlify-lambda serve src",
+    "build": "NODE_ENV=production ./node_modules/.bin/netlify-lambda build src"
   },
   "author": "",
   "license": "ISC",

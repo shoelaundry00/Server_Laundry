@@ -1,4 +1,5 @@
 const express = require('express')
+const serverless = require("serverless-http")
 const router = express.Router()
 const db = require('../db')
 const { inputChecks, userNumberGenerator } = require('../helper')
@@ -177,3 +178,4 @@ router.delete('/delete/:id', async (req, res, next) => {
 })
 
 module.exports = router
+module.exports.handler=serverless(router)

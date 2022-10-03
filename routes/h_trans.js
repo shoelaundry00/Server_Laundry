@@ -1,4 +1,5 @@
 const express = require('express')
+const serverless = require("serverless-http")
 const cloudinary = require('cloudinary')
 const router = express.Router()
 const db = require('../db')
@@ -197,3 +198,4 @@ router.delete('/delete/:id', async (req, res, next) => {
 })
 
 module.exports = router
+module.exports.handler=serverless(router)
