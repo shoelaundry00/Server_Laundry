@@ -1,10 +1,14 @@
 {
-   "version": 2,
-   "name": "shoe-laundry",
-   "builds": [
-      { "src": "app.js", "use": "@vercel/node" }
-   ],
-   "routes": [
-      { "src": "/(.*)", "dest": "/" }
-   ]
+  "builds": [
+    {
+      "src": "./index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/index.js"
+    }
+  ]
 }

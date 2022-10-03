@@ -2,7 +2,7 @@ const express = require('express')
 // const multer = require('multer');
 // const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser')
-const { inputChecks } = require('./helper')
+const { inputChecks } = require('../helper')
 
 const cors = require('cors')
 // const { inputChecks } = require('./helper')
