@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "node devApp.js",
     "seed": "node seed/seed.mjs",
+    "start": "node app.js"
   },
   "author": "",
   "license": "ISC",
