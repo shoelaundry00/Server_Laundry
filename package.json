@@ -3,10 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
-  "engines": {
-    "node": "18.x",
-    "npm": "7.x"
-  },
   "scripts": {
     "dev": "node devApp.js",
     "seed": "node seed/seed.mjs",
