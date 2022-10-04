@@ -49,7 +49,7 @@ app.post('/api/test', async (req, res, next) => {
 })
 
 app.get("/", function(req, res){
-  res.send("API WORKING!!!")
+  res.send("API WORKING !!!")
 })
 
 app.listen(3000, () => console.log(`Running...`))
