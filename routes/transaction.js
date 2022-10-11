@@ -170,6 +170,7 @@ router.post('/create', async (req, res, next) => {
           product.id
         )
 
+        console.log('===================================')
         console.log('productRows')
         console.log(productRows)
         console.log('===================================')
@@ -178,6 +179,7 @@ router.post('/create', async (req, res, next) => {
         console.log('===================================')
         console.log('product')
         console.log(product)
+        console.log('===================================')
 
         await connection.query(
           'UPDATE product SET product_stock = ? WHERE product_id = ?',
