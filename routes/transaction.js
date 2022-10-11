@@ -170,25 +170,10 @@ router.post('/create', async (req, res, next) => {
           product.id
         )
 
-        console.log('===================================')
-        console.log('productRows')
         console.log(productRows)
-        console.log('===================================')
-        console.log('productRows[0]')
-        console.log(productRows[0])
-        console.log('===================================')
-        console.log('product')
-        console.log(product)
-        console.log('===================================')
 
         const tempQty = productRows[0].product_stock - product.qty
         const productId = productRows[0].product_id
-
-        console.log(`tempQty = ${tempQty}` )
-        console.log(`productId = ${productId}` )
-        console.log('===================================')
-
-        console.log(`UPDATE product SET product_stock = ${tempQty} WHERE product_id = '${productId}'`)
 
         await connection.query(
           `UPDATE product SET product_stock = ${tempQty} WHERE product_id = '${productId}'`
@@ -221,6 +206,10 @@ router.post('/create', async (req, res, next) => {
         )
 
         console.log(jasaRows)
+
+        console.log("==========================================")
+        console.log(`jasa.qty = ${jasa.qty}`)
+        console.log("==========================================")
 
         await connection.query(
           'UPDATE product SET product_stock = ? WHERE product_id = ?',
