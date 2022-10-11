@@ -207,14 +207,9 @@ router.post('/create', async (req, res, next) => {
 
         console.log(jasaRows)
 
-        console.log("==========================================")
-        console.log(`jasa = `)
-        console.log(jasa)
-        console.log("==========================================")
-
         await connection.query(
           'UPDATE product SET product_stock = ? WHERE product_id = ?',
-          [jasaRows[0].product_stock - jasa.qty, jasaRows[0].product_id]
+          [jasaRows[0].product_stock - 1, jasaRows[0].product_id]
         )
       }
     }
