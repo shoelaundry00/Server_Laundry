@@ -208,7 +208,7 @@ router.post('/create', async (req, res, next) => {
         console.log(jasaRows)
 
         console.log("==========================================")
-        console.log(`jasa.length = ${jasa_list.length}`)
+        console.log(`jasa = ${jasa}`)
         console.log("==========================================")
 
         await connection.query(
