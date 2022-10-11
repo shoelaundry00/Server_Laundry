@@ -18,7 +18,7 @@ nodemon
       url = await ngrok.connect({
         port: port,
         region: 'sa',
-        authtoken: '2FW8W9IlBzrNTrRiV2VwnMZelPc_4npp6aJqsuLHpXRCkc5uT',
+        authtoken: '2FNWqegNRRitIyzhlI2xrYI7A8g_2vCA9gjsvms8nrdD1YVNs',
       })
       console.log(`server: ${url}/api`)
     }

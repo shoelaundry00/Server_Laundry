@@ -3,117 +3,18 @@ const router = express.Router()
 const db = require('../db')
 require('dotenv').config()
 const bcrypt = require('bcryptjs')
-const { inputChecks, userNumberGenerator, throwError } = require('../helper')
+const {
+  inputChecks,
+  generateUserID,
+  throwError,
+  privilegeChecks,
+} = require('../helper')
+
 const insertEmployeeSQL = `INSERT INTO employee (employee_id, employee_name, employee_username, employee_password, employee_create_id, employee_create_ip, employee_update_id, employee_update_ip, employee_note, employee_status) VALUES (?,?,?,?,?,?,?,?,?,?)`
+const insertHEmployeeSQL = `INSERT INTO h_employee (h_employee_id, h_employee_name, h_employee_username, h_employee_create_id, h_employee_create_ip, h_employee_update_id, h_employee_update_ip, h_employee_note, h_employee_status, FK_employee_id) VALUES (?,?,?,?,?,?,?,?,?,?awd)`
+const updateHEmployeeSQL = `UPDATE h_employee SET h_employee_name=?, h_employee_username=?, h_employee_update_id=?, h_employee_date=?, h_employee_update_ip=?, h_employee_note=?, h_employee_status=? WHERE FK_employee_id=? AND h_employee_status = 1`
 const updateEmployeeSQL = `UPDATE employee SET employee_name=?, employee_password=?, employee_update_ip=?, employee_update_date=?, employee_note=?, employee_status=? WHERE employee_id=?`
 const insertEmployeePrivilegeSQL = `INSERT INTO employee_privilege (employee_privilege_id, employee_privilege_create_id, employee_privilege_create_ip, employee_privilege_update_id, employee_privilege_update_ip, employee_privilege_note, employee_privilege_status, FK_employee_id, FK_privilege_id) VALUES (?,?,?,?,?,?,?,?,?)`
-const insertEmployeeLoginSQL = `INSERT INTO employee_login (employee_login_id, FK_employee_id, employee_login_ip, employee_login_status, employee_login_create_id, employee_login_update_id) VALUES (?,?,?,?,?,?)`
-const updateEmployeeLoginSQL = `UPDATE employee_login SET employee_login_status=?, employee_login_update_id=?, employee_login_update_date=? WHERE FK_employee_id=? AND employee_login_status=1`
-
-// Employee Login
-router.post('/login', async (req, res, next) => {
-  const retVal = {
-    status: 200,
-  }
-
-  const requiredInputs = ['username', 'password']
-
-  try {
-    inputChecks(requiredInputs, req.body, true)
-
-    const { username, password } = req.body
-
-    const ip = req.ip
-
-    const connection = await db
-
-    let query = `SELECT * FROM employee WHERE employee_username = '${username}'`
-
-    const [employeeResult] = await connection.query(query)
-
-    const { id, createId, updateId } = await userNumberGenerator(
-      connection,
-      'employee_login',
-      'L'
-    )
-
-    await connection.query(updateEmployeeLoginSQL, [
-      0,
-      updateId,
-      new Date(),
-      employeeResult[0].employee_id,
-    ])
-
-    if (employeeResult.length === 0) {
-      return res.status(404).json({
-        status: 404,
-        target: 'username',
-        message: 'Username tidak terdaftar',
-      })
-    }
-    const employee = employeeResult[0]
-    const isValidPass = await bcrypt.compare(
-      password,
-      employee.employee_password
-    )
-    if (!isValidPass) throwError(404, 'Password salah', 'password')
-
-    // TODO: Update Table User Login
-    await connection.query(insertEmployeeLoginSQL, [
-      id,
-      employee.employee_id,
-      ip,
-      1,
-      createId,
-      updateId
-    ])
-
-    retVal.data = employee
-    return res.status(retVal.status).json(retVal)
-  } catch (error) {
-    return next(error)
-  }
-})
-
-router.post('/logout/:id', async (req, res, next) => {
-  const retVal = {
-    status: 200,
-  }
-
-  try {
-    const connection = await db
-
-    const { updateId } = await userNumberGenerator(
-      connection,
-      'employee_login',
-      'L'
-    )
-
-    let query = `SELECT * FROM employee_login WHERE employee_login_status=1 AND FK_employee_id = '${req.params.id}'`
-    const [employeeResult] = await connection.query(query)
-
-    if (employeeResult.length === 0) {
-      return res.status(404).json({
-        status: 404,
-        message: 'ID invalid',
-      })
-    }
-    const employee = employeeResult[0]
-
-    // TODO: Update Table User Login
-    await connection.query(updateEmployeeLoginSQL, [
-      0,
-      updateId,
-      new Date(),
-      employee.employee_id,
-    ])
-
-    retVal.data = employee
-    return res.status(retVal.status).json(retVal)
-  } catch (error) {
-    return next(error)
-  }
-})
 
 // Get Employee
 router.get('/get/:id?', async (req, res, next) => {
@@ -121,9 +22,9 @@ router.get('/get/:id?', async (req, res, next) => {
     status: 200,
   }
 
+  const connection = await db.getConnection()
   try {
-    const connection = await db
-    const query = `SELECT * FROM employee WHERE employee_status = 1${
+    const query = `SELECT e.*, h_employee_id as employee_history_id FROM employee e join h_employee h on h.FK_employee_id = e.employee_id WHERE employee_status = 1 AND h_employee_status = 1 ${
       req.params.id ? `AND employee_id = '${req.params.id}'` : ''
     }`
     const [rows] = await connection.query(query)
@@ -135,10 +36,11 @@ router.get('/get/:id?', async (req, res, next) => {
       )
       employee.employee_privileges = privileges
     }
-
     retVal.data = rows
+    connection.destroy()
     return res.status(retVal.status).json(retVal)
   } catch (error) {
+    connection.destroy()
     return next(error)
   }
 })
@@ -149,39 +51,49 @@ router.post('/create', async (req, res, next) => {
     status: 201,
   }
   const requiredInputs = ['name', 'username', 'password']
+  const requiredPrivileges = ['buat pegawai']
 
-  const connection = await db
+  const connection = await db.getConnection()
   try {
+    privilegeChecks(req.loggedPrivileges, requiredPrivileges, req.loggedIsAdmin)
     inputChecks(requiredInputs, req.body)
 
     const { name, username, password, note, privileges } = req.body
-    const create_ip = req.ip
+    const ip = req.ip
 
     const [employees] = await connection.query(
       `SELECT * FROM employee where employee_username = '${username}'`
     )
     if (employees.length !== 0) {
       // Jika username sudah digunakan
-      // return res.status(retVal.status).json({ target: 'username', message: 'Username sudah digunakan'});
       throwError(400, 'Username sudah digunakan', 'username')
     }
 
     // Jika unique, create user
     await connection.beginTransaction()
-    const {
-      id: employeeId,
-      createId: employeeCreateId,
-      updateId: employeeUpdateId,
-    } = await userNumberGenerator(connection, 'employee', 'E')
+    const employeeId = await generateUserID(connection, 'employee', 'E')
     await connection.query(insertEmployeeSQL, [
       employeeId,
       name,
       username,
       await bcrypt.hash(password, 10),
-      employeeCreateId,
-      create_ip,
-      employeeUpdateId,
-      create_ip,
+      req.loggedEmployee.employee_id,
+      ip,
+      req.loggedEmployee.employee_id,
+      ip,
+      note ? note : null,
+      true,
+    ])
+
+    const h_employeeId = await generateUserID(connection, 'h_employee', 'HE')
+    await connection.query(insertHEmployeeSQL, [
+      h_employeeId,
+      name,
+      username,
+      req.loggedEmployee.employee_id,
+      ip,
+      req.loggedEmployee.employee_id,
+      ip,
       note ? note : null,
       true,
     ])
@@ -195,7 +107,7 @@ router.post('/create', async (req, res, next) => {
       )
 
       if (rows.length === 0) {
-        throwError(400, 'Privileges tidak valid.', '', true)
+        throwError(400, 'Privileges tidak valid', '', true)
       }
       userPrivileges.push(rows[0])
     }
@@ -205,18 +117,18 @@ router.post('/create', async (req, res, next) => {
       const privilege = isArray ? privileges[i] : privileges
 
       // Creating IDs
-      const {
-        id: employeePrivilegeid,
-        createId: employeePrivilegeCreateId,
-        updateId: employeePrivilegeUpdateId,
-      } = await userNumberGenerator(connection, 'employee_privilege', 'EP')
+      const employeePrivilegeid = await generateUserID(
+        connection,
+        'employee_privilege',
+        'EP'
+      )
 
       await connection.query(insertEmployeePrivilegeSQL, [
         employeePrivilegeid,
-        employeePrivilegeCreateId,
-        create_ip,
-        employeePrivilegeUpdateId,
-        create_ip,
+        req.loggedEmployee.employee_id,
+        ip,
+        req.loggedEmployee.employee_id,
+        ip,
         null,
         1,
         employeeId,
@@ -226,7 +138,7 @@ router.post('/create', async (req, res, next) => {
     await connection.commit()
 
     const [selectedEmployee] = await connection.query(
-      'SELECT * FROM employee WHERE employee_id = ?',
+      'SELECT e.*, h_employee_id as employee_history_id FROM employee e join h_employee h on h.FK_employee_id = e.employee_id WHERE employee_status = 1 AND h_employee_status = 1 AND employee_id=?',
       employeeId
     )
 
@@ -235,9 +147,45 @@ router.post('/create', async (req, res, next) => {
       employee_privileges: userPrivileges,
     }
 
+    connection.destroy()
     return res.status(retVal.status).json(retVal)
   } catch (error) {
     await connection.rollback()
+    connection.destroy()
+    return next(error)
+  }
+})
+
+router.put('/change-password', async (req, res, next) => {
+  const retVal = {
+    status: 200,
+  }
+
+  const requiredInputs = ['password']
+
+  const connection = await db.getConnection()
+  try {
+    inputChecks(requiredInputs, req.body)
+    const { password } = req.body
+
+    const cryptedPass = await bcrypt.hash(password, 10)
+
+    await connection.query(
+      'UPDATE employee SET employee_password = ?, employee_update_id=?, employee_update_date=?, employee_update_ip=? WHERE employee_id = ?',
+      [
+        cryptedPass,
+        req.loggedEmployee.employee_id,
+        new Date(),
+        req.ip,
+        req.loggedEmployee.employee_id,
+      ]
+    )
+
+    retVal.data = cryptedPass
+
+    return res.status(retVal.status).json(retVal)
+  } catch (error) {
+    connection.destroy()
     return next(error)
   }
 })
@@ -247,22 +195,73 @@ router.put('/update/:id', async (req, res, next) => {
   const retVal = {
     status: 200,
   }
-  // const requiredInputs = ['name', 'status', 'privileges']
+  const requiredPrivileges = ['perbarui pegawai']
 
-  const connection = await db
+  const connection = await db.getConnection()
   try {
-    // inputChecks(requiredInputs, req.body)
+    privilegeChecks(req.loggedPrivileges, requiredPrivileges, req.loggedIsAdmin)
 
     const { name, password, note, privileges } = req.body
     const ip = req.ip
 
     await connection.beginTransaction()
     const [employee] = await connection.query(
-      `SELECT * FROM employee where employee_id = '${req.params.id}'`
+      `SELECT * FROM employee where employee_id = '${req.params.id}' AND employee_status = 1`
     )
     if (employee.length === 0) {
       // Jika id salah
-      throwError(404, 'ID tidak ditemukan')
+      throwError(404, 'ID tidak ditemukan', '', true)
+    }
+
+    await connection.query(updateEmployeeSQL, [
+      name,
+      password
+        ? await bcrypt.hash(password, 10)
+        : employee[0].employee_password,
+      ip,
+      new Date(),
+      note ? note : employee[0].employee_note,
+      true,
+      req.params.id,
+    ])
+
+    // Update or Create history
+
+    const [history] = await connection.query(
+      `SELECT * FROM h_employee where FK_employee_id = '${req.params.id}' AND h_employee_status = 1`
+    )
+
+    const hEmployee = history[0]
+
+    if (hEmployee.h_employee_used === 1) {
+      await connection.query(
+        `UPDATE h_employee SET h_employee_status = 0 WHERE FK_employee_id = '${req.params.id}'`
+      )
+
+      const h_employeeId = await generateUserID(connection, 'h_employee', 'HE')
+      await connection.query(insertHEmployeeSQL, [
+        h_employeeId,
+        name ? name : employee[0].employee_name,
+        employee[0].employee_username,
+        req.loggedEmployee.employee_id,
+        ip,
+        req.loggedEmployee.employee_id,
+        ip,
+        note ? note : employee[0].employee_note,
+        true,
+        req.params.id,
+      ])
+    } else {
+      await connection.query(updateHEmployeeSQL, [
+        name ? name : employee[0].employee_name,
+        employee[0].employee_username,
+        req.loggedEmployee.employee_id,
+        new Date(),
+        ip,
+        note ? note : null,
+        true,
+        req.params.id,
+      ])
     }
 
     await connection.query(updateEmployeeSQL, [
@@ -356,7 +355,7 @@ router.put('/update/:id', async (req, res, next) => {
           id: employeePrivilegeid,
           createId: employeePrivilegeCreateId,
           updateId: employeePrivilegeUpdateId,
-        } = await userNumberGenerator(connection, 'employee_privilege', 'EP')
+        } = await generateUserID(connection, 'employee_privilege', 'EP')
 
         await connection.query(insertEmployeePrivilegeSQL, [
           employeePrivilegeid,
@@ -385,7 +384,7 @@ router.put('/update/:id', async (req, res, next) => {
     await connection.commit()
 
     const [selectedEmployee] = await connection.query(
-      'SELECT * FROM employee WHERE employee_id = ?',
+      'SELECT e.*, h_employee_id as employee_history_id FROM employee e join h_employee h on h.FK_employee_id = e.employee_id WHERE employee_status = 1 AND h_employee_status = 1 AND employee_id=?',
       req.params.id
     )
 
@@ -398,9 +397,11 @@ router.put('/update/:id', async (req, res, next) => {
       employee_privileges: retPrivileges,
     }
 
+    connection.destroy()
     return res.status(retVal.status).json(retVal)
   } catch (error) {
     await connection.rollback()
+    connection.destroy()
     return next(error)
   }
 })
@@ -409,22 +410,45 @@ router.delete('/delete/:id', async (req, res, next) => {
   const retVal = {
     status: 200,
   }
+  const requiredPrivileges = ['hapus pegawai']
+
+  const connection = await db.getConnection()
 
   try {
-    const connection = await db
+    privilegeChecks(req.loggedPrivileges, requiredPrivileges, req.loggedIsAdmin)
+
+    const [rows] = await connection.query(
+      `SELECT * FROM employee WHERE employee_id = '${req.params.id}'`
+    )
+
+    if (rows.length === 0) {
+      throwError(400, 'ID tidak ditemukan', '', true)
+    }
 
     await connection.query(
       `UPDATE employee SET employee_status = 0 WHERE employee_id = '${req.params.id}'`
+    )
+
+    await connection.query(
+      `UPDATE h_employee SET h_employee_status = 0 WHERE FK_employee_id = '${req.params.id}'`
     )
 
     const [deletedEmployee] = await connection.query(
       `SELECT * FROM employee WHERE employee_id = '${req.params.id}'`
     )
 
+    const [history] = await connection.query(
+      `SELECT h_employee_id FROM h_employee WHERE FK_employee_id = '${req.params.id}' order by h_employee_update_date desc limit 1`
+    )
+
+    deletedEmployee[0].employee_history_id = history[0].h_employee_id
+
     retVal.data = deletedEmployee[0]
 
+    connection.destroy()
     return res.status(retVal.status).json(retVal)
   } catch (error) {
+    connection.destroy()
     return next(error)
   }
 })

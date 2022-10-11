@@ -62,28 +62,86 @@ function inputChecks(
 }
 
 /**
- * Generate id, createId, and updateId
+ * Check for privileges from loggedPrivileges.
+ *
+ * This function fails if any of needed privileges are not present in the privileges list.
+ * @param {Array} privileges - List of privileges from logged in user
+ * @param {Array} requiredPrivileges - List of privileges required to perform
+ * @param {Boolean} isAdmin - Whether logged user is admin or not
+ * @returns {Boolean} isPrivileged
+ */
+
+function privilegeChecks(privileges, requiredPrivileges, isAdmin) {
+  if (isAdmin) return
+
+  for (let i = 0; i < requiredPrivileges.length; i++) {
+    const privilege = requiredPrivileges[i]
+
+    if (
+      !privileges.some(
+        (item) => item.privilege_name.toLowerCase() === privilege
+      )
+    ) {
+      return throwError(403, 'Forbidden Access')
+    }
+  }
+}
+
+// /**
+//  * Generate id, createId, and updateId
+//  * @param {Connection} connection - DB Connection
+//  * @param {String} tableName - Name of the table
+//  * @param {String} prefixId - String at the start of the id
+//  * @returns {String} id, createId, and updateId
+//  */
+
+// async function userNumberGenerator(
+//   connection,
+//   tableName,
+//   prefixId,
+//   queueLength = 4
+// ) {
+//   let dateString = dayjs().format('DDMMYY')
+//   let query = `SELECT * FROM ${tableName} WHERE ${tableName}_id like '${prefixId}${dateString}%'`
+//   const [rows] = await connection.query(query)
+
+//   // Creating IDs
+//   const userNumber = `${dateString}${`${rows.length + 1}`.padStart(
+//     queueLength,
+//     '0'
+//   )}`
+//   return {
+//     id: `${prefixId}${userNumber}`,
+//     createId: `${prefixId}C${userNumber}`,
+//     updateId: `${prefixId}U${userNumber}`,
+//   }
+// }
+
+/**
+ * Generate id
  * @param {Connection} connection - DB Connection
  * @param {String} tableName - Name of the table
  * @param {String} prefixId - String at the start of the id
- * @returns {String} id, createId, and updateId
+ * @returns {String} id
  */
 
-async function userNumberGenerator(connection, tableName, prefixId) {
+async function generateUserID(
+  connection,
+  tableName,
+  prefixId,
+  queueLength = 4
+) {
   let dateString = dayjs().format('DDMMYY')
   let query = `SELECT * FROM ${tableName} WHERE ${tableName}_id like '${prefixId}${dateString}%'`
   const [rows] = await connection.query(query)
 
   // Creating IDs
   const userNumber = `${dateString}${`${rows.length + 1}`.padStart(
-    4 - prefixId.length + 1,
+    queueLength,
     '0'
   )}`
-  return {
-    id: `${prefixId}${userNumber}`,
-    createId: `${prefixId}C${userNumber}`,
-    updateId: `${prefixId}U${userNumber}`,
-  }
+
+  return `${prefixId}${userNumber}`
 }
 
 /**
@@ -110,16 +168,15 @@ function throwError(
   throw {
     status: statusCode,
     customTarget: target,
-    customMessage: `${message} ${
-      addDocumentation
-        ? `Tolong baca ${process.env.DOCUMENTATION_URL} untuk informasi lebih lanjut.`
-        : ''
-    }`,
+    customMessage: addDocumentation
+      ? `${message} Tolong baca ${process.env.DOCUMENTATION_URL} untuk informasi lebih lanjut.`
+      : message,
   }
 }
 
 module.exports = {
   inputChecks,
-  userNumberGenerator,
+  generateUserID,
   throwError,
+  privilegeChecks,
 }

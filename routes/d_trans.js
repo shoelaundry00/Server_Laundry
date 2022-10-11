@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const db = require('../db')
-const { inputChecks, userNumberGenerator } = require('../helper')
+const { inputChecks, generateUserID } = require('../helper')
 
 const insertDTransactionSQL = `INSERT INTO d_trans
 (d_trans_id, d_trans_create_id, d_trans_create_ip,
@@ -20,17 +20,15 @@ const updateDTransactionSQL = `UPDATE d_trans SET
   d_trans_id=?
 `
 
-router.get('/get/:id?', async (req, res, next) => {
+router.get('/get/:h_trans_id', async (req, res, next) => {
   const retVal = {
     status: 200,
   }
 
   try {
-    const connection = await db
+    const connection = await db.getConnection()
 
-    const query = `SELECT * FROM d_trans WHERE d_trans_status = 1 ${
-      req.params.id ? ` AND FK_h_trans_id = '${req.params.id}'` : ''
-    }`
+    const query = `SELECT * FROM d_trans WHERE d_trans_status = 1 AND FK_h_trans_id = '${req.params.h_trans_id}'`
 
     const [rows] = await connection.query(query)
 
@@ -45,26 +43,26 @@ router.post('/create', async (req, res, next) => {
   const retVal = {
     status: 201,
   }
-  const requiredInputs = ['done','quantity','subtotal','status','FK_h_product_id','FK_h_trans_id']
+  const requiredInputs = [
+    'done',
+    'quantity',
+    'subtotal',
+    'status',
+    'FK_h_product_id',
+    'FK_h_trans_id',
+  ]
 
   try {
     inputChecks(requiredInputs, req.body)
 
-    const {
-      note,
-      done,
-      quantity,
-      subtotal,
-      status,
-      h_product_id,
-      h_trans_id
-    } = req.body
+    const { note, done, quantity, subtotal, status, h_product_id, h_trans_id } =
+      req.body
 
     const create_ip = req.ip
 
-    const connection = await db
+    const connection = await db.getConnection()
 
-    const { id, createId, updateId } = await userNumberGenerator(
+    const { id, createId, updateId } = await generateUserID(
       connection,
       'd_trans',
       'DT'
@@ -102,29 +100,18 @@ router.put('/update/:id', async (req, res, next) => {
   }
 
   try {
-    const {
-      note,
-      done,
-      quantity,
-      subtotal,
-      status,
-      employee_id
-    } = req.body
+    const { note, done, quantity, subtotal, status, employee_id } = req.body
 
     const ip = req.ip
 
-    const connection = await db
+    const connection = await db.getConnection()
 
     const [oldDTrans] = await connection.query(
       `SELECT * FROM d_trans WHERE d_trans_id=?`,
       req.params.id
     )
 
-    const { id, createId, updateId } = await userNumberGenerator(
-      connection,
-      'd_trans',
-      'DT'
-    )
+    const { updateId } = await generateUserID(connection, 'd_trans', 'DT')
 
     await connection.query(updateDTransactionSQL, [
       updateId,
@@ -158,7 +145,7 @@ router.delete('/delete/:id', async (req, res, next) => {
   }
 
   try {
-    const connection = await db
+    const connection = await db.getConnection()
 
     await connection.query(
       `UPDATE d_trans SET d_trans_status = 0 WHERE d_trans_id = '${req.params.id}'`

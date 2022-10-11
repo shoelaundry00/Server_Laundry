@@ -8,7 +8,7 @@ router.get('/get/:id?', async (req, res, next) => {
   }
 
   try {
-    const connection = await db
+    const connection = await db.getConnection()
     const query = `SELECT * FROM privilege ${
       req.params.id ? `where privilege_id = '${req.params.id}'` : ''
     }`
