@@ -212,7 +212,7 @@ router.put('/update/:id', async (req, res, next) => {
     const [employee] = await connection.query(
       `SELECT * FROM employee where employee_id = '${req.params.id}' AND employee_status = 1`
     )
-    console.log("Select Employee done")
+    console.log(`Select Employee done = ${employee.length}`)
 
     if (employee.length === 0) {
       // Jika id salah
