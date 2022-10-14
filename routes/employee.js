@@ -199,6 +199,7 @@ router.put('/update/:id', async (req, res, next) => {
 
   const connection = await db.getConnection()
   try {
+    console.log("try updating employee")
     privilegeChecks(req.loggedPrivileges, requiredPrivileges, req.loggedIsAdmin)
 
     const { name, password, note, privileges } = req.body
