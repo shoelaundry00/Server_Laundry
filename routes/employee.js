@@ -245,6 +245,7 @@ router.put('/update/:id', async (req, res, next) => {
       await connection.query(
         `UPDATE h_employee SET h_employee_status = 0 WHERE FK_employee_id = '${req.params.id}'`
       )
+      console.log("Update h_employee done")
 
       const h_employeeId = await generateUserID(connection, 'h_employee', 'HE')
       await connection.query(insertHEmployeeSQL, [
