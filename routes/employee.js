@@ -207,6 +207,8 @@ router.put('/update/:id', async (req, res, next) => {
     console.log("taking variable from client side")
 
     await connection.beginTransaction()
+    console.log("connection beginTransaction done")
+    
     const [employee] = await connection.query(
       `SELECT * FROM employee where employee_id = '${req.params.id}' AND employee_status = 1`
     )
