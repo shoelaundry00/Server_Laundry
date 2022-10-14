@@ -245,7 +245,7 @@ router.put('/update/:id', async (req, res, next) => {
     console.log(hEmployee)
     console.log("==========================================")
 
-    if (hEmployee.h_employee_used === 1) {
+    if (hEmployee.h_employee_status === 1) {
       await connection.query(
         `UPDATE h_employee SET h_employee_status = 0 WHERE FK_employee_id = '${req.params.id}'`
       )
