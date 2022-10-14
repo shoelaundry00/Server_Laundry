@@ -242,6 +242,8 @@ router.put('/update/:id', async (req, res, next) => {
     const hEmployee = history[0]
 
     console.log("==========================================")
+    console.log(employee[0])
+    console.log("==========================================")
     console.log(hEmployee)
     console.log("==========================================")
 
