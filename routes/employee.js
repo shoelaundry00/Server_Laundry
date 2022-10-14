@@ -252,6 +252,8 @@ router.put('/update/:id', async (req, res, next) => {
       console.log("Update h_employee done")
 
       const h_employeeId = await generateUserID(connection, 'h_employee', 'HE')
+      console.log("generateUserID done")
+
       await connection.query(insertHEmployeeSQL, [
         h_employeeId,
         name ? name : employee[0].employee_name,
@@ -264,6 +266,9 @@ router.put('/update/:id', async (req, res, next) => {
         true,
         req.params.id,
       ])
+
+      console.log("insert into History done")
+
     } else {
       await connection.query(updateHEmployeeSQL, [
         name ? name : employee[0].employee_name,
@@ -288,6 +293,7 @@ router.put('/update/:id', async (req, res, next) => {
       true,
       req.params.id,
     ])
+    console.log("update Employee Done")
 
     // get employee privileges
     const [userPrivileges] = await connection.query(
