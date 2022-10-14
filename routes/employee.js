@@ -302,6 +302,7 @@ router.put('/update/:id', async (req, res, next) => {
     //     })
     // }
 
+    console.log("start Check input privilege")
     // Check if input privileges is valid
     const isArray = Array.isArray(privileges)
     const endPrivileges = []
@@ -347,6 +348,7 @@ router.put('/update/:id', async (req, res, next) => {
       }
     }
 
+    console.log("update or insert employee_privilege")
     // Update or insert employee_privilege
     for (let i = 0; i < endPrivileges.length; i++) {
       const privilege = endPrivileges[i]
