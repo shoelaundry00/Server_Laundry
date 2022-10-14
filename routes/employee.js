@@ -237,6 +237,7 @@ router.put('/update/:id', async (req, res, next) => {
     const [history] = await connection.query(
       `SELECT * FROM h_employee where FK_employee_id = '${req.params.id}' AND h_employee_status = 1`
     )
+    console.log(`Select Employee history = ${history.length}`)
 
     const hEmployee = history[0]
 
