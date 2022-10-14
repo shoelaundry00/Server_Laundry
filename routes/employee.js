@@ -256,6 +256,9 @@ router.put('/update/:id', async (req, res, next) => {
       const h_employeeId = await generateUserID(connection, 'h_employee', 'HE')
       console.log("generateUserID done")
 
+      console.log("===============================================")
+      console.log(insertHEmployeeSQL)
+      console.log("===============================================")
       await connection.query(insertHEmployeeSQL, [
         h_employeeId,
         name ? name : employee[0].employee_name,
