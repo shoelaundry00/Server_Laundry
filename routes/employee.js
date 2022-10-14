@@ -378,20 +378,17 @@ router.put('/update/:id', async (req, res, next) => {
       const privilege = endPrivileges[i]
       if (privilege.type === 'insert') {
         const {
-          id,
-          createId,
-          updateId,
+          id
         } = await generateUserID(connection, 'employee_privilege', 'EP')
 
         console.log(insertEmployeePrivilegeSQL)
         console.log(`employeePrivilegeId = ${id}`)
-        console.log(`employeePrivilegeCreateId = ${createId}`)
-        console.log(`employeePrivilegeUpdateId = ${updateId}`)
+        
         await connection.query(insertEmployeePrivilegeSQL, [
-          employeePrivilegeid,
-          employeePrivilegeCreateId,
+          id,
+          req.loggedEmployee.employee_id,
           ip,
-          employeePrivilegeUpdateId,
+          req.loggedEmployee.employee_id,
           ip,
           null,
           1,
