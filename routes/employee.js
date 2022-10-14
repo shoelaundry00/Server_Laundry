@@ -11,7 +11,7 @@ const {
 } = require('../helper')
 
 const insertEmployeeSQL = `INSERT INTO employee (employee_id, employee_name, employee_username, employee_password, employee_create_id, employee_create_ip, employee_update_id, employee_update_ip, employee_note, employee_status) VALUES (?,?,?,?,?,?,?,?,?,?)`
-const insertHEmployeeSQL = `INSERT INTO h_employee (h_employee_id, h_employee_name, h_employee_username, h_employee_create_id, h_employee_create_ip, h_employee_update_id, h_employee_update_ip, h_employee_note, h_employee_status, FK_employee_id) VALUES (?,?,?,?,?,?,?,?,?,?awd)`
+const insertHEmployeeSQL = `INSERT INTO h_employee (h_employee_id, h_employee_name, h_employee_username, h_employee_create_id, h_employee_create_ip, h_employee_update_id, h_employee_update_ip, h_employee_note, h_employee_status, FK_employee_id) VALUES (?,?,?,?,?,?,?,?,?,?)`
 const updateHEmployeeSQL = `UPDATE h_employee SET h_employee_name=?, h_employee_username=?, h_employee_update_id=?, h_employee_date=?, h_employee_update_ip=?, h_employee_note=?, h_employee_status=? WHERE FK_employee_id=? AND h_employee_status = 1`
 const updateEmployeeSQL = `UPDATE employee SET employee_name=?, employee_password=?, employee_update_ip=?, employee_update_date=?, employee_note=?, employee_status=? WHERE employee_id=?`
 const insertEmployeePrivilegeSQL = `INSERT INTO employee_privilege (employee_privilege_id, employee_privilege_create_id, employee_privilege_create_ip, employee_privilege_update_id, employee_privilege_update_ip, employee_privilege_note, employee_privilege_status, FK_employee_id, FK_privilege_id) VALUES (?,?,?,?,?,?,?,?,?)`
