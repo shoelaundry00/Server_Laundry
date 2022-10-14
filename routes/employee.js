@@ -230,6 +230,7 @@ router.put('/update/:id', async (req, res, next) => {
       true,
       req.params.id,
     ])
+    console.log("Update Employee done")
 
     // Update or Create history
 
