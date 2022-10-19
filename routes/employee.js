@@ -371,7 +371,7 @@ router.put('/update/:id', async (req, res, next) => {
       console.log(`userPrivileges FK_id = ${userPrivileges[i].FK_privilege_id}`)
       console.log("==========================")
 
-      const found = privileges.find(
+      const found = Array.from(privileges).find(
         (privilege) => privilege == userPrivileges[i].FK_privilege_id
       )
 
