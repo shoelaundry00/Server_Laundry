@@ -54,10 +54,13 @@ router.post('/login', async (req, res, next) => {
       password,
       employee.employee_password
     )
+
+    console.log(`isValidPass = ${isvalidPass}`)
     if (!isValidPass) throwError(404, 'Password salah', 'password')
 
     const id = await generateUserID(connection, 'employee_login', 'L')
 
+    console.log(`id = ${id}`)
     await connection.query(updateEmployeeLoginSQL, [
       0,
       employee.employee_id,
@@ -65,6 +68,7 @@ router.post('/login', async (req, res, next) => {
       ip,
       employee.employee_id,
     ])
+    console.log(`udpate employee login done`)
 
     await connection.query(insertEmployeeLoginSQL, [
       id,
@@ -76,6 +80,7 @@ router.post('/login', async (req, res, next) => {
       employee.employee_id,
       ip,
     ])
+    console.log(`insert employee login done`)
 
     const token = jwt.sign(
       { employee_id: employee.employee_id },
