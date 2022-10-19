@@ -55,7 +55,7 @@ router.post('/login', async (req, res, next) => {
       employee.employee_password
     )
 
-    console.log(`isValidPass = ${isvalidPass}`)
+    console.log(`isValidPass = ${isValidPass}`)
     if (!isValidPass) throwError(404, 'Password salah', 'password')
 
     const id = await generateUserID(connection, 'employee_login', 'L')
