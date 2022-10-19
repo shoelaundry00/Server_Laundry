@@ -41,7 +41,7 @@ router.post('/login', async (req, res, next) => {
     const [employeeResult] = await connection.query(query)
 
     console.log("=======================================")
-    console.log(`employeeResult = `)
+    console.log(`employeeResult = ${employeeResult.length}`)
     console.log(employeeResult)
     console.log("=======================================")
 
