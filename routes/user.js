@@ -15,6 +15,8 @@ router.post('/login', async (req, res, next) => {
     status: 200,
   }
 
+  console.log("API Login called")
+
   const requiredInputs = ['username', 'password']
 
   const connection = await db.getConnection()
