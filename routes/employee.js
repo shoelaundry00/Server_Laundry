@@ -202,6 +202,8 @@ router.put('/update/:id', async (req, res, next) => {
     console.log("try updating employee")
     privilegeChecks(req.loggedPrivileges, requiredPrivileges, req.loggedIsAdmin)
 
+    console.log(privilegeChecks)
+    
     const { name, password, note, privileges } = req.body
     const ip = req.ip
     console.log("taking variable from client side")
