@@ -201,7 +201,7 @@ router.put('/update/:id', async (req, res, next) => {
   try {
     console.log("try updating employee")
     console.log(`req.loggedPrivileges = ${req.loggedPrivileges}`)
-    console.log(`requiredPrivileges = ${reqquiredPrivileges}`)
+    console.log(`requiredPrivileges = ${requiredPrivileges}`)
     console.log(`req.loggedIsAdmin = ${req.loggedIsAdmin}`)
     privilegeChecks(req.loggedPrivileges, requiredPrivileges, req.loggedIsAdmin)
 
