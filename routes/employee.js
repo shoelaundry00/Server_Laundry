@@ -200,10 +200,11 @@ router.put('/update/:id', async (req, res, next) => {
   const connection = await db.getConnection()
   try {
     console.log("try updating employee")
+    console.log(`req.loggedPrivileges = ${req.loggedPrivileges}`)
+    console.log(`requiredPrivileges = ${reqquiredPrivileges}`)
+    console.log(`req.loggedIsAdmin = ${req.loggedIsAdmin}`)
     privilegeChecks(req.loggedPrivileges, requiredPrivileges, req.loggedIsAdmin)
 
-    console.log(privilegeChecks)
-    
     const { name, password, note, privileges } = req.body
     const ip = req.ip
     console.log("taking variable from client side")
