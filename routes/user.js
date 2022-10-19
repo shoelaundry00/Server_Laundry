@@ -22,14 +22,28 @@ router.post('/login', async (req, res, next) => {
   const connection = await db.getConnection()
   try {
     inputChecks(requiredInputs, req.body, true)
+    console.log("inputChecks DONE")
 
     const { username, password } = req.body
+
+
+    console.log("=======================================")
+    console.log(`Username = ${username}`)
+    console.log(`Password = ${password}`)
+    console.log("=======================================")
 
     const ip = req.ip
 
     let query = `SELECT * FROM employee WHERE employee_username = '${username}' AND employee_status = 1`
 
+    console.log(`query = ${query}`)
+
     const [employeeResult] = await connection.query(query)
+
+    console.log("=======================================")
+    console.log(`employeeResult = `)
+    console.log(employeeResult)
+    console.log("=======================================")
 
     if (employeeResult.length === 0) {
       throwError(404, 'Username tidak terdaftar', 'username')
