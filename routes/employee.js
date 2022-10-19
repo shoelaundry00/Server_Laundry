@@ -348,10 +348,6 @@ router.put('/update/:id', async (req, res, next) => {
         (employeePrivilege) => employeePrivilege.FK_privilege_id == privilege
       )
 
-      console.log("==========================")
-      console.log(found)
-      console.log("==========================")
-
       if (found) {
         actionType = '-'
         if (found.employee_privilege_status === 0) {
@@ -369,6 +365,12 @@ router.put('/update/:id', async (req, res, next) => {
       const found = privileges.find(
         (privilege) => privilege == userPrivileges[i].FK_privilege_id
       )
+
+      console.log("==========================")
+      console.log(`i = ${i}`)
+      console.log("--------------------------")
+      console.log(found)
+      console.log("==========================")
 
       if (!found) {
         endPrivileges.push({
