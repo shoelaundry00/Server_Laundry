@@ -327,6 +327,8 @@ router.put('/update/:id', async (req, res, next) => {
     // }
 
     console.log("start Check input privilege")
+
+    console.log(`privileges = ${privileges.length}`)
     // Check if input privileges is valid
     const isArray = Array.isArray(privileges)
     const endPrivileges = []
