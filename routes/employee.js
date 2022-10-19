@@ -348,6 +348,8 @@ router.put('/update/:id', async (req, res, next) => {
         (employeePrivilege) => employeePrivilege.FK_privilege_id == privilege
       )
 
+      console.log(`found = ${found}`)
+
       if (found) {
         actionType = '-'
         if (found.employee_privilege_status === 0) {
