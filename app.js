@@ -91,6 +91,13 @@ async function authMiddleware(req, res, next) {
         (privilege) => privilege.privilege_name == 'Administrator'
       )
 
+      console.log("try updating employee")
+      console.log(`req.loggedPrivileges = `)
+      console.log(`-----------------------------------------------`)
+      console.log(req.loggedPrivileges)
+      console.log(`-----------------------------------------------`)
+      console.log(`req.loggedIsAdmin = ${req.loggedIsAdmin}`)
+
       next()
     } catch (err) {
       console.log('error', err)
