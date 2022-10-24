@@ -197,8 +197,8 @@ router.put('/update/:id', async (req, res, next) => {
   }
   const requiredPrivileges = ['perbarui pegawai']
 
-  console.log(`req.body = `)
-  console.log(req.body)
+  console.log(`req = `)
+  console.log(req)
   console.log(`~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`)
 
   const connection = await db.getConnection()
