@@ -6,10 +6,10 @@ const createPrivilegeTableSQL = `CREATE TABLE privilege (
   privilege_name TEXT NOT NULL,
   privilege_create_id VARCHAR(11) NOT NULL,
   privilege_create_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-  privilege_create_ip VARCHAR(15) NOT NULL,
+  privilege_create_ip VARCHAR(25) NOT NULL,
   privilege_update_id VARCHAR(11) DEFAULT NULL,
   privilege_update_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-  privilege_update_ip VARCHAR(15) DEFAULT NULL,
+  privilege_update_ip VARCHAR(225) DEFAULT NULL,
   privilege_note TEXT DEFAULT NULL,
   privilege_status BOOLEAN NOT NULL
 )`
@@ -55,10 +55,10 @@ const createCustomerTableSQL = `CREATE TABLE customer (
   customer_address TEXT NOT NULL,
   customer_create_id VARCHAR(11) NOT NULL,
   customer_create_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-  customer_create_ip VARCHAR(15) NOT NULL,
+  customer_create_ip VARCHAR(25) NOT NULL,
   customer_update_id VARCHAR(11) DEFAULT NULL,
   customer_update_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-  customer_update_ip VARCHAR(15) DEFAULT NULL,
+  customer_update_ip VARCHAR(25) DEFAULT NULL,
   customer_note TEXT DEFAULT NULL,
   customer_status BOOLEAN NOT NULL
 )`
@@ -77,10 +77,10 @@ const createHCustomerTableSQL = `CREATE TABLE h_customer (
   h_customer_address TEXT NOT NULL,
   h_customer_create_id VARCHAR(11) NOT NULL,
   h_customer_create_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-  h_customer_create_ip VARCHAR(15) NOT NULL,
+  h_customer_create_ip VARCHAR(25) NOT NULL,
   h_customer_update_id VARCHAR(11) DEFAULT NULL,
   h_customer_update_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-  h_customer_update_ip VARCHAR(15) DEFAULT NULL,
+  h_customer_update_ip VARCHAR(25) DEFAULT NULL,
   h_customer_note TEXT DEFAULT NULL,
   h_customer_status BOOLEAN NOT NULL,
   h_customer_used BOOLEAN DEFAULT 0,
@@ -98,10 +98,10 @@ const createDTransTableSQL = `CREATE TABLE d_trans (
   PRIMARY KEY (d_trans_id),
   d_trans_create_id VARCHAR(11) NOT NULL,
   d_trans_create_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-  d_trans_create_ip VARCHAR(15) NOT NULL,
+  d_trans_create_ip VARCHAR(25) NOT NULL,
   d_trans_update_id VARCHAR(11) DEFAULT NULL,
   d_trans_update_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-  d_trans_update_ip VARCHAR(15) DEFAULT NULL,
+  d_trans_update_ip VARCHAR(25) DEFAULT NULL,
   d_trans_note TEXT DEFAULT NULL,
   d_trans_done BOOLEAN DEFAULT 0,
   d_trans_quantity INT NOT NULL,
@@ -112,7 +112,7 @@ const createDTransTableSQL = `CREATE TABLE d_trans (
   FK_h_trans_id VARCHAR(11) NOT NULL
 )`
 const insertDTransSQL = `INSERT INTO d_trans (d_trans_id, d_trans_create_id, d_trans_create_date, d_trans_create_ip, d_trans_update_id, d_trans_update_date, d_trans_update_ip, d_trans_note, d_trans_done, d_trans_quantity, d_trans_subtotal, d_trans_status, FK_h_product_id, FK_h_employee_id, FK_h_trans_id) VALUES ?`
-const initialDTransSQL = `INSERT INTO d_trans (d_trans_id, d_trans_create_id, d_trans_create_date, d_trans_create_ip, d_trans_update_id, d_trans_update_date, d_trans_update_ip, d_trans_note, d_trans_done, d_trans_quantity, d_trans_subtotal, d_trans_status, FK_h_product_id, FK_h_employee_id, FK_h_trans_id) VALUES 
+const initialDTransSQL = `INSERT INTO d_trans (d_trans_id, d_trans_create_id, d_trans_create_date, d_trans_create_ip, d_trans_update_id, d_trans_update_date, d_trans_update_ip, d_trans_note, d_trans_done, d_trans_quantity, d_trans_subtotal, d_trans_status, FK_h_product_id, FK_h_employee_id, FK_h_trans_id) VALUES
 ('D0410220001', 'E0000000001', '2022-10-04', '::1',  'E0000000001', '2022-10-04', '::1', NULL, 0, 1, 150000, 1, 'HP1209220001', NULL, 'T0410220001'),
 ('D0410220002', 'E0000000001', '2022-10-04', '::1',  'E0000000001', '2022-10-04', '::1', NULL, 0, 1, 75000, 1, 'HP3107220002', NULL, 'T0410220001'),
 ('D0410220003', 'E0000000001', '2022-10-04', '::1',  'E0000000001', '2022-10-04', '::1', NULL, 0, 1, 70000, 1, 'HP3107220002', 'HE1209220002', 'T0410220002')`
@@ -135,10 +135,10 @@ const createHTransTableSQL = `CREATE TABLE h_trans (
   h_trans_total BIGINT(20) NOT NULL,
   h_trans_create_id VARCHAR(11) NOT NULL,
   h_trans_create_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-  h_trans_create_ip VARCHAR(15) NOT NULL,
+  h_trans_create_ip VARCHAR(25) NOT NULL,
   h_trans_update_id VARCHAR(11) DEFAULT NULL,
   h_trans_update_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-  h_trans_update_ip VARCHAR(15) DEFAULT NULL,
+  h_trans_update_ip VARCHAR(25) DEFAULT NULL,
   h_trans_note TEXT DEFAULT NULL,
   h_trans_progress TINYINT(1) DEFAULT 0,
   h_trans_status BOOLEAN NOT NULL,
@@ -146,7 +146,7 @@ const createHTransTableSQL = `CREATE TABLE h_trans (
   FK_h_promo_id VARCHAR(13) DEFAULT NULL
 )`
 
-const initialHTransSQL = `INSERT INTO h_trans (h_trans_id, h_trans_total, h_trans_create_id, h_trans_create_date, h_trans_create_ip, h_trans_update_id, h_trans_update_date, h_trans_update_ip, h_trans_note, h_trans_progress, h_trans_status, FK_h_customer_id, FK_h_promo_id) VALUES 
+const initialHTransSQL = `INSERT INTO h_trans (h_trans_id, h_trans_total, h_trans_create_id, h_trans_create_date, h_trans_create_ip, h_trans_update_id, h_trans_update_date, h_trans_update_ip, h_trans_note, h_trans_progress, h_trans_status, FK_h_customer_id, FK_h_promo_id) VALUES
 ('T0410220001', 225000, 'E0000000001', '2022-10-04', '::1',  'E0000000001', '2022-10-04', '::1', NULL, 0, 1, 'HC3107220002', NULL),
 ('T0410220002', 75000, 'E0000000001', '2022-10-04', '::1',  'E0000000001', '2022-10-04', '::1', NULL, 1, 1, 'HC3107220001', 'HPR170922003')`
 
@@ -163,10 +163,10 @@ const createPromoTableSQL = `CREATE TABLE promo (
   promo_max_discount BIGINT(20) DEFAULT NULL,
   promo_create_id VARCHAR(11) NOT NULL,
   promo_create_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-  promo_create_ip VARCHAR(15) NOT NULL,
+  promo_create_ip VARCHAR(25) NOT NULL,
   promo_update_id VARCHAR(11) DEFAULT NULL,
   promo_update_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-  promo_update_ip VARCHAR(15) DEFAULT NULL,
+  promo_update_ip VARCHAR(25) DEFAULT NULL,
   promo_note TEXT DEFAULT NULL,
   promo_status BOOLEAN NOT NULL
 )`
@@ -190,10 +190,10 @@ const createHPromoTableSQL = `CREATE TABLE h_promo (
   h_promo_max_discount BIGINT(20) DEFAULT NULL,
   h_promo_create_id VARCHAR(11) NOT NULL,
   h_promo_create_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-  h_promo_create_ip VARCHAR(15) NOT NULL,
+  h_promo_create_ip VARCHAR(25) NOT NULL,
   h_promo_update_id VARCHAR(11) DEFAULT NULL,
   h_promo_update_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-  h_promo_update_ip VARCHAR(15) DEFAULT NULL,
+  h_promo_update_ip VARCHAR(25) DEFAULT NULL,
   h_promo_note TEXT DEFAULT NULL,
   h_promo_status BOOLEAN NOT NULL,
   h_promo_used BOOLEAN DEFAULT 0,
@@ -218,10 +218,10 @@ const createHProductTableSQL = `CREATE TABLE h_product (
   h_product_category TEXT NOT NULL,
   h_product_create_id VARCHAR(11) NOT NULL,
   h_product_create_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-  h_product_create_ip VARCHAR(15) NOT NULL,
+  h_product_create_ip VARCHAR(25) NOT NULL,
   h_product_update_id VARCHAR(11) DEFAULT NULL,
   h_product_update_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-  h_product_update_ip VARCHAR(15) DEFAULT NULL,
+  h_product_update_ip VARCHAR(25) DEFAULT NULL,
   h_product_note TEXT DEFAULT NULL,
   h_product_status BOOLEAN NOT NULL,
   h_product_used BOOLEAN DEFAULT 0,
@@ -247,10 +247,10 @@ const createProductTableSQL = `CREATE TABLE product (
   product_category TEXT NOT NULL,
   product_create_id VARCHAR(11) NOT NULL,
   product_create_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-  product_create_ip VARCHAR(15) NOT NULL,
+  product_create_ip VARCHAR(25) NOT NULL,
   product_update_id VARCHAR(11) DEFAULT NULL,
   product_update_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-  product_update_ip VARCHAR(15) DEFAULT NULL,
+  product_update_ip VARCHAR(25) DEFAULT NULL,
   product_note TEXT DEFAULT NULL,
   product_status BOOLEAN NOT NULL
 )`
@@ -271,10 +271,10 @@ const createEmployeeTableSQL = `CREATE TABLE employee (
   employee_password VARCHAR(255) NOT NULL,
   employee_create_id VARCHAR(11) NOT NULL,
   employee_create_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-  employee_create_ip VARCHAR(15) NOT NULL,
+  employee_create_ip VARCHAR(25) NOT NULL,
   employee_update_id VARCHAR(11) DEFAULT NULL,
   employee_update_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-  employee_update_ip VARCHAR(15) DEFAULT NULL,
+  employee_update_ip VARCHAR(25) DEFAULT NULL,
   employee_note TEXT DEFAULT NULL,
   employee_status BOOLEAN NOT NULL
 )`
@@ -287,10 +287,10 @@ const createHEmployeeTableSQL = `CREATE TABLE h_employee(
   h_employee_username VARCHAR(255) NOT NULL,
   h_employee_create_id VARCHAR(11) NOT NULL,
   h_employee_create_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-  h_employee_create_ip VARCHAR(15) NOT NULL,
+  h_employee_create_ip VARCHAR(25) NOT NULL,
   h_employee_update_id VARCHAR(11) DEFAULT NULL,
   h_employee_update_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-  h_employee_update_ip VARCHAR(15) DEFAULT NULL,
+  h_employee_update_ip VARCHAR(25) DEFAULT NULL,
   h_employee_note TEXT DEFAULT NULL,
   h_employee_status BOOLEAN NOT NULL,
   FK_employee_id VARCHAR(11) NOT NULL
@@ -303,14 +303,14 @@ const createEmployeeLoginTableSQL = `CREATE TABLE employee_login (
   PRIMARY KEY (employee_login_id),
   FK_employee_id VARCHAR(11) NOT NULL,
   employee_login_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-  employee_login_ip VARCHAR(15) NOT NULL,
+  employee_login_ip VARCHAR(25) NOT NULL,
   employee_login_status BOOLEAN NOT NULL,
   employee_login_create_id VARCHAR(11) NOT NULL,
   employee_login_create_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-  employee_login_create_ip VARCHAR(15) NOT NULL,
+  employee_login_create_ip VARCHAR(25) NOT NULL,
   employee_login_update_id VARCHAR(11) DEFAULT NULL,
   employee_login_update_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-  employee_login_update_ip VARCHAR(15) NOT NULL
+  employee_login_update_ip VARCHAR(25) NOT NULL
 )`
 const insertEmployeeLoginSQL = `INSERT INTO employee_login(employee_login_id, FK_employee_id, employee_login_date, employee_login_ip, employee_login_status, employee_login_create_id, employee_login_create_date, employee_login_create_ip, employee_login_update_id, employee_login_update_date, employee_login_update_ip) VALUES ?`
 const initialEmployeeLoginSQL = `INSERT INTO employee_login(employee_login_id, FK_employee_id, employee_login_date, employee_login_ip, employee_login_status, employee_login_create_id, employee_login_create_date, employee_login_create_ip, employee_login_update_id, employee_login_update_date, employee_login_update_ip) VALUES
@@ -324,10 +324,10 @@ const createEmployeePrivilegeTableSQL = `CREATE TABLE employee_privilege (
   PRIMARY KEY (employee_privilege_id),
   employee_privilege_create_id VARCHAR(13) NOT NULL,
   employee_privilege_create_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-  employee_privilege_create_ip VARCHAR(15) NOT NULL,
+  employee_privilege_create_ip VARCHAR(25) NOT NULL,
   employee_privilege_update_id VARCHAR(13) DEFAULT NULL,
   employee_privilege_update_date DATETIME DEFAULT CURRENT_TIMESTAMP,
-  employee_privilege_update_ip VARCHAR(15) DEFAULT NULL,
+  employee_privilege_update_ip VARCHAR(25) DEFAULT NULL,
   employee_privilege_note TEXT DEFAULT NULL,
   employee_privilege_status BOOLEAN NOT NULL,
   FK_employee_id VARCHAR(11) NOT NULL,

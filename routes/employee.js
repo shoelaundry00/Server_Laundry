@@ -197,22 +197,11 @@ router.put('/update/:id', async (req, res, next) => {
   }
   const requiredPrivileges = ['perbarui pegawai']
 
-  console.log(`req = `)
-  console.log(req)
-  console.log(`~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`)
-
   const connection = await db.getConnection()
   try {
     console.log("try updating employee")
-    console.log(`req.loggedPrivileges = `)
-    console.log(`-----------------------------------------------`)
-    console.log(req.loggedPrivileges)
-    console.log(`-----------------------------------------------`)
-    console.log(`requiredPrivileges = ${requiredPrivileges}`)
 
     privilegeChecks(req.loggedPrivileges, requiredPrivileges, req.loggedIsAdmin)
-
-    console.log(`req.loggedIsAdmin = ${req.loggedIsAdmin}`)
 
     const { name, password, note, privileges } = req.body
     const ip = req.ip
@@ -224,12 +213,13 @@ router.put('/update/:id', async (req, res, next) => {
     const [employee] = await connection.query(
       `SELECT * FROM employee where employee_id = '${req.params.id}' AND employee_status = 1`
     )
-    console.log(`Select Employee done = ${employee.length}`)
 
     if (employee.length === 0) {
       // Jika id salah
       throwError(404, 'ID tidak ditemukan', '', true)
     }
+
+    console.log(`Password = ${password}`)
 
     await connection.query(updateEmployeeSQL, [
       name,
@@ -249,15 +239,8 @@ router.put('/update/:id', async (req, res, next) => {
     const [history] = await connection.query(
       `SELECT * FROM h_employee where FK_employee_id = '${req.params.id}' AND h_employee_status = 1`
     )
-    console.log(`Select Employee history = ${history.length}`)
 
     const hEmployee = history[0]
-
-    console.log("==========================================")
-    console.log(employee[0])
-    console.log("==========================================")
-    console.log(hEmployee)
-    console.log("==========================================")
 
     if (hEmployee.h_employee_status === 1) {
       await connection.query(
@@ -268,9 +251,6 @@ router.put('/update/:id', async (req, res, next) => {
       const h_employeeId = await generateUserID(connection, 'h_employee', 'HE')
       console.log("generateUserID done")
 
-      console.log("===============================================")
-      console.log(insertHEmployeeSQL)
-      console.log("===============================================")
       await connection.query(insertHEmployeeSQL, [
         h_employeeId,
         name ? name : employee[0].employee_name,
@@ -339,8 +319,6 @@ router.put('/update/:id', async (req, res, next) => {
     // }
 
     console.log("start Check input privilege")
-
-    console.log(`privileges = ${privileges.length}`)
     // Check if input privileges is valid
     const isArray = Array.isArray(privileges)
     const endPrivileges = []
@@ -376,16 +354,9 @@ router.put('/update/:id', async (req, res, next) => {
     for (var i = 0; i < userPrivileges.length; i++) {
       const privilege = isArray ? privileges[i] : privileges
 
-      console.log("==========================")
-      console.log(`i = ${i}`)
-      console.log("--------------------------")
-      console.log(`Privilege = ${privilege}`)
-      console.log(`userPrivileges FK_id = ${userPrivileges[i].FK_privilege_id}`)
-      console.log("==========================")
-
-      const found = Array.from(privileges).find(
+      const found = Array.from(privilege).find(
         (privilege) => privilege == userPrivileges[i].FK_privilege_id
-      )
+      ) || privilege == userPrivileges[i].FK_privilege_id
 
       if (!found) {
         endPrivileges.push({

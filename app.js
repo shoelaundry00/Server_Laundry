@@ -56,16 +56,24 @@ app.post('/api/test/endpoint', async (req, res, next) => {
   }
 })
 
+app.get('api/test/helloWorld', async(req,res,next)=>{
+  console.log("HELLO WORLD")
+})
+
 app.listen(3000, () => console.log(`Running...`))
 
 async function authMiddleware(req, res, next) {
   const endpoint = req.url.split('/')
+  console.log("Start Middleware")
   if (endpoint[3] != 'get') {
+    console.log(endpoint[3])
     try {
       const token = req.headers.auth_token
 
-      if (!token)
+      if (!token){
+        console.log("Invalid Token")
         return res.status(401).json({ status: 401, message: 'Unauthorized' })
+      }
 
       const decoded = jwt.verify(token, process.env.APP_SECRET)
 
@@ -81,22 +89,25 @@ async function authMiddleware(req, res, next) {
       if (employee.length === 0)
         return res.status(401).json({ status: 401, message: 'Unauthorized' })
 
+      console.log("__________________________________")
+      console.log(decoded)
+      console.log("__________________________________")
+
       const [privileges] = await connection.query(
         `select p.* from privilege p join employee_privilege e on p.privilege_id = e.FK_privilege_id where e.employee_privilege_status = 1 AND e.FK_employee_id = '${decoded.employee_id}'`
       )
 
       req.loggedEmployee = employee[0]
       req.loggedPrivileges = privileges
+
+      console.log("=============================================")
+      console.log(privileges)
+      console.log("=============================================")
+      console.log(`privilege_name = ${privileges[0].privilege_name}`)
+
       req.loggedIsAdmin = privileges.some(
         (privilege) => privilege.privilege_name == 'Administrator'
       )
-
-      console.log("try updating employee")
-      console.log(`req.loggedPrivileges = `)
-      console.log(`-----------------------------------------------`)
-      console.log(req.loggedPrivileges)
-      console.log(`-----------------------------------------------`)
-      console.log(`req.loggedIsAdmin = ${req.loggedIsAdmin}`)
 
       next()
     } catch (err) {

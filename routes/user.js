@@ -61,6 +61,7 @@ router.post('/login', async (req, res, next) => {
     const id = await generateUserID(connection, 'employee_login', 'L')
 
     console.log(`id = ${id}`)
+    console.log(`ip = ${ip}`)
     await connection.query(updateEmployeeLoginSQL, [
       0,
       employee.employee_id,
