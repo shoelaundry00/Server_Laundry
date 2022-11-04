@@ -417,10 +417,11 @@ router.put('/update/:id', async (req, res, next) => {
       employee_privileges: retPrivileges,
     }
 
+    console.log(`retVal`)
+    console.log(retVal)
+
     connection.destroy()
 
-    console.log(`retVal `)
-    console.log(reqVal)
     return res.status(retVal.status).json(retVal)
   } catch (error) {
     await connection.rollback()
