@@ -131,7 +131,6 @@ async function generateUserID(
   prefixId,
   queueLength = 4
 ) {
-  console.log("Generate User ID Start")
   let dateString = dayjs().format('DDMMYY')
   let query = `SELECT * FROM ${tableName} WHERE ${tableName}_id like '${prefixId}${dateString}%'`
   const [rows] = await connection.query(query)
@@ -141,10 +140,7 @@ async function generateUserID(
     queueLength,
     '0'
   )}`
-
-  console.log(`Return = ${prefixId}${userNumber}`)
-
-  console.log("Generate User Id Stop")
+  
   return `${prefixId}${userNumber}`
 }
 
