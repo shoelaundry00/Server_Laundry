@@ -168,20 +168,22 @@ router.put('/update/:id', async (req, res, next) => {
     console.log(oldProduct)
     console.log("=======================================")
 
-    if (oldProduct[0].product_type == 'jasa')
+    if (oldProduct[0].product_type == 'jasa'){
       console.log("jasa")
       privilegeChecks(
         req.loggedPrivileges,
         ['perbarui jasa'],
         req.loggedIsAdmin
       )
-    else if (oldProduct[0].product_type == 'produk')
+    }
+    else if (oldProduct[0].product_type == 'produk'){
       console.log("produk")
       privilegeChecks(
         req.loggedPrivileges,
         ['perbarui produk'],
         req.loggedIsAdmin
       )
+    }
 
     // Creating ID String
     const updateId = await generateUserID(connection, 'product', 'P')
