@@ -86,6 +86,8 @@ router.post('/create', async (req, res, next) => {
       true,
     ])
 
+    console.log("CREATING ID")
+
     const h_employeeId = await generateUserID(connection, 'h_employee', 'HE')
 
     console.log(`insertHEmployeeSQL = ${insertHEmployeeSQL}`)
