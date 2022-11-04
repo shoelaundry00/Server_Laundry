@@ -205,15 +205,23 @@ router.put('/update/:id', async (req, res, next) => {
       req.params.id,
     ])
 
+    console.log("UPDATE DATA DONE")
+
     // Check if h_product hasn't been used
     const [histories] = await connection.query(
       `SELECT * FROM h_product WHERE FK_product_id = '${req.params.id}' AND h_product_status = 1`
     )
 
+    console.log("histories :")
+    console.log(histories)
+    console.log("==========================================")
+
     const historyProduct = histories[0]
 
     let historyId = historyProduct.h_product_id
 
+    console.log(`historyId = ${historyId}`)
+    
     const h_id = await generateUserID(connection, 'h_product', 'HP')
 
     if (historyProduct.h_product_used === 1) {
