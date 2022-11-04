@@ -47,6 +47,7 @@ router.get('/get/:id?', async (req, res, next) => {
 
 // Insert Employee
 router.post('/create', async (req, res, next) => {
+  console.log("create Employee API")
   const retVal = {
     status: 201,
   }
