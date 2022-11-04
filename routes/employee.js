@@ -334,23 +334,23 @@ router.put('/update/:id', async (req, res, next) => {
         throwError(400, 'Privileges tidak valid.', '', true)
       }
 
-      let actionType = 'insert'
+      if(privilege!=undefined){
+        const found = userPrivileges.find(
+          (employeePrivilege) => employeePrivilege.FK_privilege_id == privilege
+        )
 
-      const found = userPrivileges.find(
-        (employeePrivilege) => employeePrivilege.FK_privilege_id == privilege
-      )
-
-      if (found) {
-        actionType = '-'
-        if (found.employee_privilege_status === 0) {
-          actionType = 'update'
+        if (found) {
+          actionType = '-'
+          if (found.employee_privilege_status === 0) {
+            actionType = 'update'
+          }
         }
-      }
 
-      endPrivileges.push({
-        id: privilege,
-        type: actionType,
-      })
+        endPrivileges.push({
+          id: privilege,
+          type: actionType,
+        })
+      } 
     }
 
     for (var i = 0; i < userPrivileges.length; i++) {
@@ -360,15 +360,17 @@ router.put('/update/:id', async (req, res, next) => {
       console.log(privilege)
       console.log("------------------------------------------------")
 
-      const found = Array.from(privilege).find(
-        (privilege) => privilege == userPrivileges[i].FK_privilege_id
-      ) || privilege == userPrivileges[i].FK_privilege_id
+      if(privilege != undefined){
+        const found = Array.from(privilege).find(
+          (privilege) => privilege == userPrivileges[i].FK_privilege_id
+        ) || privilege == userPrivileges[i].FK_privilege_id
 
-      if (!found) {
-        endPrivileges.push({
-          id: userPrivileges[i].FK_privilege_id,
-          type: 'delete',
-        })
+        if (!found) {
+          endPrivileges.push({
+            id: userPrivileges[i].FK_privilege_id,
+            type: 'delete',
+          })
+        }
       }
     }
 
