@@ -418,7 +418,7 @@ router.put('/update/:id', async (req, res, next) => {
     }
 
     console.log(`retVal`)
-    console.log(retVal.data.employee_privileges)
+    console.log(retPrivileges)
 
     connection.destroy()
 
