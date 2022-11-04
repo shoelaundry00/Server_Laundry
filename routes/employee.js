@@ -417,6 +417,8 @@ router.put('/update/:id', async (req, res, next) => {
       employee_privileges: retPrivileges,
     }
 
+    console.log(retPrivileges)
+
     connection.destroy()
 
     return res.status(retVal.status).json(retVal)
