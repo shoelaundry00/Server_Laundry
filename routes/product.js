@@ -24,7 +24,7 @@ WHERE product_id=?
 
 const updateHProductSQL = `UPDATE h_product SET
 h_product_name=?, h_product_type=?, h_product_price=?, h_product_brand=?, h_product_category=?,
- h_product_update_id=?, h_product_update_ip=?, h_update_date=?, h_product_note=?, h_product_status=?, WHERE h_product_id=?
+ h_product_update_id=?, h_product_update_ip=?, h_update_date=?, h_product_note=?, h_product_status=? WHERE h_product_id=?
 `
 
 router.get('/get/:id?', async (req, res, next) => {
@@ -151,25 +151,17 @@ router.put('/update/:id', async (req, res, next) => {
 
   const connection = await db.getConnection()
   try {
-    console.log("Try Update Product")
 
     const { name, type, price, brand, stock, category, note } = req.body
 
     const ip = req.ip
-
-    console.log(`req.params.id = ${req.params.id}`)
 
     const [oldProduct] = await connection.query(
       `SELECT * FROM product WHERE product_id=?`,
       req.params.id
     )
 
-    console.log("oldProduct =")
-    console.log(oldProduct)
-    console.log("=======================================")
-
     if (oldProduct[0].product_type == 'jasa'){
-      console.log("jasa")
       privilegeChecks(
         req.loggedPrivileges,
         ['perbarui jasa'],
@@ -177,7 +169,6 @@ router.put('/update/:id', async (req, res, next) => {
       )
     }
     else if (oldProduct[0].product_type == 'produk'){
-      console.log("produk")
       privilegeChecks(
         req.loggedPrivileges,
         ['perbarui produk'],
@@ -189,7 +180,6 @@ router.put('/update/:id', async (req, res, next) => {
     const updateId = await generateUserID(connection, 'product', 'P')
 
     //updating data
-    console.log(`updateProductSQL = ${updateProductSQL}`)
     await connection.query(updateProductSQL, [
       name ? name : oldProduct[0].product_name,
       type ? type : oldProduct[0].product_type,
@@ -205,34 +195,22 @@ router.put('/update/:id', async (req, res, next) => {
       req.params.id,
     ])
 
-    console.log("UPDATE DATA DONE")
-
     // Check if h_product hasn't been used
     const [histories] = await connection.query(
       `SELECT * FROM h_product WHERE FK_product_id = '${req.params.id}' AND h_product_status = 1`
     )
 
-    console.log("histories :")
-    console.log(histories)
-    console.log("==========================================")
-
     const historyProduct = histories[0]
 
     let historyId = historyProduct.h_product_id
 
-    console.log(`historyId = ${historyId}`)
-
     const h_id = await generateUserID(connection, 'h_product', 'HP')
 
     if (historyProduct.h_product_used === 1) {
-      console.log(`h_product_used = ${req.params.id}`)
-
       // Set h_product status to 0
       await connection.query(
         `UPDATE h_product SET h_product_status = 0 WHERE FK_product_id = '${req.params.id}'`
       )
-
-      console.log("UPDATE H_PRODUCT DONE")
 
       await connection.query(insertHProductSQL, [
         h_id,
@@ -251,11 +229,8 @@ router.put('/update/:id', async (req, res, next) => {
         req.params.id,
       ])
 
-      console.log("INSERT H_PRODUCT DONE")
-
       historyId = h_id
     } else {
-      console.log(`h_product_unsused = ${updateHProductSQL}`)
       await connection.query(updateHProductSQL, [
         name ? name : oldProduct[0].product_name,
         type ? type : oldProduct[0].product_type,
@@ -269,8 +244,6 @@ router.put('/update/:id', async (req, res, next) => {
         1,
         historyId,
       ])
-
-      console.log("UPDATE H_PRODUCT DONE")
     }
 
     const [updatedProduct] = await connection.query(
