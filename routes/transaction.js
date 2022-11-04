@@ -106,7 +106,7 @@ router.post('/create', async (req, res, next) => {
       progress,
     } = req.body
 
-    if(product_list != undefined && jasa_list != undefined){
+    if(product_list == undefined && jasa_list == undefined){
       if (product_list.length === 0 && jasa_list.length === 0) {
         throwError(
           400,
