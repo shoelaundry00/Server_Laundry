@@ -106,14 +106,17 @@ router.post('/create', async (req, res, next) => {
       progress,
     } = req.body
 
-    if (product_list.length === 0 && jasa_list.length === 0) {
-      throwError(
-        400,
-        `Input ada yang kurang: [${['product_list', 'jasa_list'].join(',')}].`,
-        '',
-        true
-      )
+    if(product_list != undefined && jasa_list != undefined){
+      if (product_list.length === 0 && jasa_list.length === 0) {
+        throwError(
+          400,
+          `Input ada yang kurang: [${['product_list', 'jasa_list'].join(',')}].`,
+          '',
+          true
+        )
+      }
     }
+
 
     const ip = req.ip
 
