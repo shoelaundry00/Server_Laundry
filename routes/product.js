@@ -225,6 +225,8 @@ router.put('/update/:id', async (req, res, next) => {
     const h_id = await generateUserID(connection, 'h_product', 'HP')
 
     if (historyProduct.h_product_used === 1) {
+      console.log(`h_product_used = ${req.params.id}`)
+
       // Set h_product status to 0
       await connection.query(
         `UPDATE h_product SET h_product_status = 0 WHERE FK_product_id = '${req.params.id}'`
@@ -253,6 +255,7 @@ router.put('/update/:id', async (req, res, next) => {
 
       historyId = h_id
     } else {
+      console.log(`h_product_unsused`)
       await connection.query(updateHProductSQL, [
         name ? name : oldProduct[0].product_name,
         type ? type : oldProduct[0].product_type,
@@ -266,6 +269,7 @@ router.put('/update/:id', async (req, res, next) => {
         1,
         historyId,
       ])
+      
     }
 
     const [updatedProduct] = await connection.query(
