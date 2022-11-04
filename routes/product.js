@@ -169,12 +169,14 @@ router.put('/update/:id', async (req, res, next) => {
     console.log("=======================================")
 
     if (oldProduct[0].product_type == 'jasa')
+      console.log("jasa")
       privilegeChecks(
         req.loggedPrivileges,
         ['perbarui jasa'],
         req.loggedIsAdmin
       )
     else if (oldProduct[0].product_type == 'produk')
+      console.log("produk")
       privilegeChecks(
         req.loggedPrivileges,
         ['perbarui produk'],
@@ -185,6 +187,7 @@ router.put('/update/:id', async (req, res, next) => {
     const updateId = await generateUserID(connection, 'product', 'P')
 
     //updating data
+    console.log(`updateProductSQL = ${updateProductSQL}`)
     await connection.query(updateProductSQL, [
       name ? name : oldProduct[0].product_name,
       type ? type : oldProduct[0].product_type,
