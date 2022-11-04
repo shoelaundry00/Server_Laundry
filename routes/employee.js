@@ -103,6 +103,7 @@ router.post('/create', async (req, res, next) => {
       ip,
       note ? note : null,
       true,
+      employeeId
     ])
 
     console.log("insert HEmployee DONE")
