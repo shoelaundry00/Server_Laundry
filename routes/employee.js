@@ -409,7 +409,7 @@ router.put('/update/:id', async (req, res, next) => {
     )
 
     const [retPrivileges] = await connection.query(
-      `select privilege_id, privilege_name, privilege_create_id, privilege_create_date, privilege_create_ip, privilege_update_id, privilege_update_date, privilege_update_ip, privilege_note, employee_privilege_status as privilege_status from privilege p join employee_privilege e on p.privilege_id = e.FK_privilege_id where e.FK_employee_id = '${req.params.id}'`
+      `select p.* from privilege p join employee_privilege e on p.privilege_id = e.FK_privilege_id where e.FK_employee_id = '${req.params.id}' and employee_privilege_status = 1`
     )
 
     retVal.data = {
