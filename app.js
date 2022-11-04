@@ -89,21 +89,12 @@ async function authMiddleware(req, res, next) {
       if (employee.length === 0)
         return res.status(401).json({ status: 401, message: 'Unauthorized' })
 
-      console.log("__________________________________")
-      console.log(decoded)
-      console.log("__________________________________")
-
       const [privileges] = await connection.query(
         `select p.* from privilege p join employee_privilege e on p.privilege_id = e.FK_privilege_id where e.employee_privilege_status = 1 AND e.FK_employee_id = '${decoded.employee_id}'`
       )
 
       req.loggedEmployee = employee[0]
       req.loggedPrivileges = privileges
-
-      console.log("=============================================")
-      console.log(privileges)
-      console.log("=============================================")
-      console.log(`privilege_name = ${privileges[0].privilege_name}`)
 
       req.loggedIsAdmin = privileges.some(
         (privilege) => privilege.privilege_name == 'Administrator'

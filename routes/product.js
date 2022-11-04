@@ -151,6 +151,8 @@ router.put('/update/:id', async (req, res, next) => {
 
   const connection = await db.getConnection()
   try {
+    console.log("Try Update Product")
+    
     const { name, type, price, brand, stock, category, note } = req.body
 
     const ip = req.ip
