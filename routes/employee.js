@@ -47,7 +47,6 @@ router.get('/get/:id?', async (req, res, next) => {
 
 // Insert Employee
 router.post('/create', async (req, res, next) => {
-  console.log("create Employee API")
   const retVal = {
     status: 201,
   }
@@ -56,7 +55,6 @@ router.post('/create', async (req, res, next) => {
 
   const connection = await db.getConnection()
   try {
-    console.log("try Create Employee")
     privilegeChecks(req.loggedPrivileges, requiredPrivileges, req.loggedIsAdmin)
     inputChecks(requiredInputs, req.body)
 
@@ -87,11 +85,7 @@ router.post('/create', async (req, res, next) => {
       true,
     ])
 
-    console.log("CREATING ID")
-
     const h_employeeId = await generateUserID(connection, 'h_employee', 'HE')
-
-    console.log(`insertHEmployeeSQL = ${insertHEmployeeSQL}`)
 
     await connection.query(insertHEmployeeSQL, [
       h_employeeId,
@@ -105,8 +99,6 @@ router.post('/create', async (req, res, next) => {
       true,
       employeeId
     ])
-
-    console.log("insert HEmployee DONE")
 
     const userPrivileges = []
     const isArray = Array.isArray(privileges)
@@ -426,6 +418,9 @@ router.put('/update/:id', async (req, res, next) => {
     }
 
     connection.destroy()
+
+    console.log(`retVal `)
+    console.log(reqVal)
     return res.status(retVal.status).json(retVal)
   } catch (error) {
     await connection.rollback()
