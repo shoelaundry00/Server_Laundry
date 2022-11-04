@@ -255,7 +255,7 @@ router.put('/update/:id', async (req, res, next) => {
 
       historyId = h_id
     } else {
-      console.log(`h_product_unsused = ${historyId}`)
+      console.log(`h_product_unsused = ${req.params.id}`)
       await connection.query(updateHProductSQL, [
         name ? name : oldProduct[0].product_name,
         type ? type : oldProduct[0].product_type,
@@ -267,7 +267,7 @@ router.put('/update/:id', async (req, res, next) => {
         new Date(),
         note ? note : oldProduct[0].product_note,
         1,
-        historyId,
+        req.params.id,
       ])
 
       console.log("UPDATE H_PRODUCT DONE")
