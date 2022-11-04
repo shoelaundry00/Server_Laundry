@@ -390,12 +390,12 @@ router.put('/update/:id', async (req, res, next) => {
         ])
       } else if (privilege.type === 'update') {
         await connection.query(
-          `UPDATE employee_privilege SET employee_privilege_status = 1, employee_privilege_update_date=? WHERE FK_privilege_id = '${privilege.id}'`,
+          `UPDATE employee_privilege SET employee_privilege_status = 1, employee_privilege_update_date=? WHERE FK_privilege_id = '${privilege.id}' and FK_employee_id = '${req.params.id}''`,
           new Date()
         )
       } else if (privilege.type === 'delete') {
         await connection.query(
-          `UPDATE employee_privilege SET employee_privilege_status = 0, employee_privilege_update_date=? WHERE FK_privilege_id = '${privilege.id}'`,
+          `UPDATE employee_privilege SET employee_privilege_status = 0, employee_privilege_update_date=? WHERE FK_privilege_id = '${privilege.id}' and FK_employee_id = '${req.params.id}'`,
           new Date()
         )
       }
