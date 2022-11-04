@@ -24,7 +24,7 @@ WHERE product_id=?
 
 const updateHProductSQL = `UPDATE h_product SET
 h_product_name=?, h_product_type=?, h_product_price=?, h_product_brand=?, h_product_category=?,
- h_product_update_id=?, h_product_update_ip=?, h_update_date=?, h_product_note=?, h_product_status=? WHERE h_product_id=?
+ h_product_update_id=?, h_product_update_ip=?, h_product_update_date=?, h_product_note=?, h_product_status=? WHERE h_product_id=?
 `
 
 router.get('/get/:id?', async (req, res, next) => {
