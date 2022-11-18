@@ -76,6 +76,9 @@ router.post('/create', async (req, res, next) => {
     const h_id = await generateUserID(connection, 'h_customer', 'HC')
 
     // Inserting h_customer
+
+    console.log(insertHCustomerSQL)
+
     await connection.query(insertHCustomerSQL, [
       h_id,
       name,
