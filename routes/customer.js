@@ -91,6 +91,7 @@ router.post('/create', async (req, res, next) => {
       ip,
       note ? note : null,
       1,
+      id,
     ])
 
     // Select created customer for return value
