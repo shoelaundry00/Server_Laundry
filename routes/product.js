@@ -5,25 +5,25 @@ const { inputChecks, generateUserID, privilegeChecks } = require('../helper')
 
 const insertProductSQL = `INSERT INTO product
 (product_id, product_name, product_type, product_price, product_brand,
- product_stock, product_category, product_create_id, product_create_ip,
+ product_stock, product_category, product_estimation, product_create_id, product_create_ip,
  product_update_id, product_update_ip, product_note, product_status)
-VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)
+VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
 `
 
 const insertHProductSQL = `INSERT INTO h_product
-(h_product_id, h_product_name, h_product_type, h_product_price, h_product_brand, h_product_category, h_product_create_id, h_product_create_ip,
+(h_product_id, h_product_name, h_product_type, h_product_price, h_product_brand, h_product_category,h_product_estimation, h_product_create_id, h_product_create_ip,
  h_product_update_id, h_product_update_ip, h_product_note, h_product_status, FK_product_id)
-VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)
+VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
 `
 
 const updateProductSQL = `UPDATE product SET product_name=?, product_type=?, product_price=?,
-product_brand=?, product_stock=?, product_category=?, product_update_id=?, product_update_ip=?,
+product_brand=?, product_stock=?, product_category=?, product_estimation=?, product_update_id=?, product_update_ip=?,
 product_update_date=?, product_note=?, product_status=?
 WHERE product_id=?
 `
 
 const updateHProductSQL = `UPDATE h_product SET
-h_product_name=?, h_product_type=?, h_product_price=?, h_product_brand=?, h_product_category=?,
+h_product_name=?, h_product_type=?, h_product_price=?, h_product_brand=?, h_product_category=?, h_product_estimation=?,
  h_product_update_id=?, h_product_update_ip=?, h_product_update_date=?, h_product_note=?, h_product_status=? WHERE h_product_id=?
 `
 
@@ -77,7 +77,7 @@ router.post('/create', async (req, res, next) => {
     status: 201,
   }
 
-  const requiredInputs = ['name', 'type', 'price', 'stock', 'category']
+  const requiredInputs = ['name', 'type', 'price', 'stock', 'category','estimation']
   const requiredPrivileges = ['buat product']
 
   const connection = await db.getConnection()
@@ -85,7 +85,7 @@ router.post('/create', async (req, res, next) => {
     privilegeChecks(req.loggedPrivileges, requiredPrivileges, req.loggedIsAdmin)
     inputChecks(requiredInputs, req.body)
 
-    const { name, type, price, brand, stock, category, note } = req.body
+    const { name, type, price, brand, stock, category, estimation, note } = req.body
     const create_ip = req.ip
 
     // Creating ID String
@@ -100,6 +100,7 @@ router.post('/create', async (req, res, next) => {
       brand ? brand : null,
       stock,
       category,
+      estimation,
       req.loggedEmployee.employee_id,
       create_ip,
       req.loggedEmployee.employee_id,
@@ -118,6 +119,7 @@ router.post('/create', async (req, res, next) => {
       price,
       brand ? brand : null,
       category,
+      estimation
       req.loggedEmployee.employee_id,
       create_ip,
       req.loggedEmployee.employee_id,
@@ -152,7 +154,7 @@ router.put('/update/:id', async (req, res, next) => {
   const connection = await db.getConnection()
   try {
 
-    const { name, type, price, brand, stock, category, note } = req.body
+    const { name, type, price, brand, stock, category, estimation, note } = req.body
 
     const ip = req.ip
 
@@ -187,6 +189,7 @@ router.put('/update/:id', async (req, res, next) => {
       brand ? brand : oldProduct[0].product_brand,
       stock ? stock : oldProduct[0].product_stock,
       category ? category : oldProduct[0].product_category,
+      estimation ? estimation : oldProduct[0].product_estimation,
       updateId,
       ip,
       new Date(),
@@ -219,6 +222,7 @@ router.put('/update/:id', async (req, res, next) => {
         price ? price : oldProduct[0].product_price,
         brand ? brand : oldProduct[0].product_brand,
         category ? category : oldProduct[0].product_category,
+        estimation ? estimation : oldProduct[0].product_estimation,
         req.loggedEmployee.employee_id,
         ip,
         req.loggedEmployee.employee_id,
@@ -237,6 +241,7 @@ router.put('/update/:id', async (req, res, next) => {
         price ? price : oldProduct[0].product_price,
         brand ? brand : oldProduct[0].product_brand,
         category ? category : oldProduct[0].product_category,
+        estimation ? estimation : oldProduct[0].product_estimation,
         req.loggedEmployee.employee_id,
         ip,
         new Date(),
