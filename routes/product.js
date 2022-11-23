@@ -119,7 +119,7 @@ router.post('/create', async (req, res, next) => {
       price,
       brand ? brand : null,
       category,
-      estimation
+      estimation,
       req.loggedEmployee.employee_id,
       create_ip,
       req.loggedEmployee.employee_id,
