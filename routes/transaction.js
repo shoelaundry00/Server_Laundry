@@ -191,7 +191,7 @@ router.post('/create', async (req, res, next) => {
 
         const dTransId = await generateUserID(connection, 'd_trans', 'D')
 
-        console.log(`dTransId = ${dTransId}, employee_id = ${req.loggedEmployee.employee_id}, ip = ${ip}, note = ${note}, jasa.subtotal = ${jasa.subtotal}, jasa.estimation = ${jasa.estimation}, jasa.id = ${jasa.id}, hTransId = ${hTransId}`)
+        //console.log(`dTransId = ${dTransId}, employee_id = ${req.loggedEmployee.employee_id}, ip = ${ip}, note = ${note}, jasa.subtotal = ${jasa.subtotal}, jasa.estimation = ${jasa.estimation}, jasa.id = ${jasa.id}, hTransId = ${hTransId}`)
 
         await connection.query(insertDTransSQL, [
           dTransId,
