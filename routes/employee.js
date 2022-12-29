@@ -342,6 +342,7 @@ router.put('/update/:id', async (req, res, next) => {
         )
 
         if (found) {
+          actionType = '-'
           if (found.employee_privilege_status === 0) {
             actionType = 'update'
           }
