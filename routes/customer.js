@@ -146,9 +146,10 @@ router.put('/update/:id', async (req, res, next) => {
       `SELECT * FROM h_customer where FK_customer_id = '${req.params.id}' AND h_customer_status = 1`
     )
 
-    const[customer] = await connection.query(
+    const[customers] = await connection.query(
       `SELECT * FROM customer where customer_id = '${req.params.id}'`
     )
+
     const hCustomer = history[0]
 
     if (hCustomer.h_customer_used === 1) {
@@ -159,19 +160,19 @@ router.put('/update/:id', async (req, res, next) => {
       const h_customerId = await generateUserID(connection, 'h_customer', 'HE')
       await connection.query(insertHCustomerSQL, [
         h_customerId,
-        name ? name : customer[0].customer_name,
-        customer[0].customer_username,
+        name ? name : customers[0].customer_name,
+        customers[0].customer_username,
         req.loggedEmployee.customer_id,
         ip,
         req.loggedEmployee.customer_id,
         ip,
-        note ? note : customer[0].customer_note,
+        note ? note : customers[0].customer_note,
         req.params.id,
       ])
     } else {
       await connection.query(updateHCustomerSQL, [
-        name ? name : customer[0].customer_name,
-        customer[0].customer_username,
+        name ? name : customers[0].customer_name,
+        customers[0].customer_username,
         req.loggedEmployee.customer_id,
         new Date(),
         ip,
