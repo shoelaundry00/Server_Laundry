@@ -129,6 +129,20 @@ router.put('/update/:id', async (req, res, next) => {
       req.params.id
     )
 
+    console.log(updateCustomerSQL)
+    console.log("==================================")
+    console.log([
+                  name,
+                  phone_number,
+                  email,
+                  address,
+                  ip,
+                  new Date(),
+                  note ? note : oldCustomer.customer_note,
+                  true,
+                  req.params.id,
+                ])
+
     // updating
     await connection.query(updateCustomerSQL, [
       name,
