@@ -18,7 +18,7 @@ const insertHCustomerSQL = `INSERT INTO h_customer
 `
 
 const updateCustomerSQL = `UPDATE customer SET customer_name=?, customer_phone_number=?, customer_email=?, customer_address=?, customer_update_id=?, customer_update_ip=?, customer_note=?, customer_status=? WHERE customer_id=?`
-const updateHCustomerSQL = `UPDATE h_customer SET h_customer_name=?, h_customer_phone_number=?, h_customer_email=?, h_customer_address=?, h_customer_update_ip=?, h_customer_update_date=?, h_customer_note=?, h_customer_status=? WHERE FK_customer_id=? AND h_employee_status = 1`
+const updateHCustomerSQL = `UPDATE h_customer SET h_customer_name=?, h_customer_phone_number=?, h_customer_email=?, h_customer_address=?, h_customer_update_ip=?, h_customer_update_date=?, h_customer_note=?, h_customer_status=? WHERE FK_customer_id=? AND h_customer_status = 1`
 
 router.get('/get/:id?', async (req, res, next) => {
   const retVal = {
@@ -161,21 +161,26 @@ router.put('/update/:id', async (req, res, next) => {
       await connection.query(insertHCustomerSQL, [
         h_customerId,
         name ? name : customers[0].customer_name,
-        customers[0].customer_username,
+        customers[0].customer_phone_number,
+        customers[0].customer_email,
+        customers[0].customer_address,
         req.loggedEmployee.customer_id,
         ip,
         req.loggedEmployee.customer_id,
         ip,
         note ? note : customers[0].customer_note,
+        true,
         req.params.id,
       ])
     } else {
       await connection.query(updateHCustomerSQL, [
         name ? name : customers[0].customer_name,
-        customers[0].customer_username,
+        customers[0].customer_phone_number,
+        customers[0].customer_email,
+        customers[0].customer_address,
         req.loggedEmployee.customer_id,
-        new Date(),
         ip,
+        new Date(),
         note ? note : null,
         req.params.id,
       ])
