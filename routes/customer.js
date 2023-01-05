@@ -129,21 +129,6 @@ router.put('/update/:id', async (req, res, next) => {
       req.params.id
     )
 
-    console.log(updateCustomerSQL)
-    console.log("==================================")
-    console.log([
-                  name,
-                  phone_number,
-                  email,
-                  address,
-                  req.loggedEmployee.employee_id,
-                  ip,
-                  new Date(),
-                  note ? note : oldCustomer.customer_note,
-                  true,
-                  req.params.id,
-                ])
-
     // updating
     await connection.query(updateCustomerSQL, [
       name,
@@ -161,6 +146,9 @@ router.put('/update/:id', async (req, res, next) => {
       `SELECT * FROM h_customer where FK_customer_id = '${req.params.id}' AND h_customer_status = 1`
     )
 
+    const[customer] = await connection.query(
+      `SELECT * FROM customer where customer_id = '${req.params.id}'`
+    )
     const hCustomer = history[0]
 
     if (hCustomer.h_customer_used === 1) {
