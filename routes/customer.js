@@ -152,7 +152,6 @@ router.put('/update/:id', async (req, res, next) => {
       address,
       req.loggedEmployee.employee_id,
       ip,
-      new Date(),
       note ? note : oldCustomer.customer_note,
       true,
       req.params.id,
