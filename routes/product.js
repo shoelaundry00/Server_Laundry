@@ -7,12 +7,12 @@ const insertProductSQL = `INSERT INTO product
 (product_id, product_name, product_type, product_price, product_brand,
  product_stock, product_category, product_create_id, product_create_ip,
  product_update_id, product_update_ip, product_note, product_status)
-VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)
 `
 
 const insertHProductSQL = `INSERT INTO h_product
 (h_product_id, h_product_name, h_product_type, h_product_price, h_product_brand, h_product_category, h_product_create_id, h_product_create_ip,
- h_product_update_id, h_product_update_ip, h_product_note, h_product_status, FK_product_id)
+ h_product_update_id, h_product_update_ip, h_product_update_date, h_product_note, h_product_status, FK_product_id)
 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)
 `
 
