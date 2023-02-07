@@ -122,6 +122,7 @@ router.post('/create', async (req, res, next) => {
       create_ip,
       req.loggedEmployee.employee_id,
       create_ip,
+      new Date(),
       note ? note : null,
       1,
       id,
