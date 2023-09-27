@@ -82,6 +82,7 @@ router.post('/create', async (req, res, next) => {
 
   const connection = await db.getConnection()
   try {
+    console.log('priv', req.loggedPrivileges);
     privilegeChecks(req.loggedPrivileges, requiredPrivileges, req.loggedIsAdmin)
     inputChecks(requiredInputs, req.body)
 
