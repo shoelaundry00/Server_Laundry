@@ -78,7 +78,7 @@ router.post('/create', async (req, res, next) => {
   }
 
   const requiredInputs = ['name', 'type', 'price', 'stock', 'category']
-  const requiredPrivileges = ['buat product']
+  const requiredPrivileges = ['buat produk']
 
   const connection = await db.getConnection()
   try {
